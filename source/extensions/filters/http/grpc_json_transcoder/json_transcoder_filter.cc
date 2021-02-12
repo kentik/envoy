@@ -835,7 +835,8 @@ bool JsonTranscoderFilter::maybeConvertGrpcStatus(Grpc::Status::GrpcStatus grpc_
     auto grpc_message_header = trailers.GrpcMessage();
     if (grpc_message_header) {
       auto message = grpc_message_header->value().getStringView();
-      status_details->set_message(message.data(), message.size());
+      auto decoded = Http::Utility::PercentEncoding::decode(message);
+      status_details->set_message(decoded.data(), decoded.size());
     }
   }
 
